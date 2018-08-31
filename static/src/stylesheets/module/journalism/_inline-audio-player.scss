@@ -1,11 +1,7 @@
-
-.in-article-audio {
-    background-color: red;
-}
-
 .inline-audio_container {
     display: flex;
     flex-direction: row;
+    border-left: 4px solid $brightness-7;
 
     .inline-audio_icon {
         width: 100px;
@@ -18,15 +14,36 @@
             span.kicker {
                 color: $sport-main;
             }
+            h3 {
+                font-weight: 900;
+            }
         }
         .inline-audio_content_header,
         .inline-audio_content_player {
-            border: 2px solid grey;
-            border-left: none;
-            border-right: none;
+            border-top: 1px solid $brightness-60;
+            height: 48%;
         }
+        .inline-audio_content_player {
+            border-bottom: 1px solid $brightness-60;
+        }
+
+        .inline-audio_controls {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .inline-audio_content_progress-bar {
+            cursor: pointer;
+            height: 15px;
+            width: 100%;
+
+            .played {
+                height: 100%;
+                width: 0%;
+                background-color: $highlight-main;
+            }
+        }
+
     }
-
-
 
 }
