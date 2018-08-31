@@ -232,16 +232,12 @@ object ImgSrc extends Logging with implicits.Strings {
 
   private val imageServiceHost: String = Configuration.images.fastlyIOHost
 
-  private case class HostMapping(prefix: String, token: String)
-
-  private lazy val hostPrefixMapping: Map[String, HostMapping] = Map(
-    "static.guim.co.uk" -> HostMapping("static", Configuration.images.backends.staticToken),
-    "static-secure.guim.co.uk" -> HostMapping("static", Configuration.images.backends.staticToken),
-    "media.guim.co.uk" -> HostMapping("media", Configuration.images.backends.mediaToken),
-    "uploads.guim.co.uk" -> HostMapping("uploads", Configuration.images.backends.uploadsToken)
+  private lazy val hostPrefixMapping: Map[String, String] = Map(
+    "static.guim.co.uk" -> "static",
+    "static-secure.guim.co.uk" -> "static",
+    "media.guim.co.uk" -> "media",
+    "uploads.guim.co.uk" -> "upload"
   )
-
-  def tokenFor(host:String): Option[String] = hostPrefixMapping.get(host).map(_.token)
 
   private val supportedImages = Set(".jpg", ".jpeg", ".png")
 
@@ -256,9 +252,9 @@ object ImgSrc extends Logging with implicits.Strings {
       hostPrefixMapping.get(uri.getHost)
         .filter(const(ImageServerSwitch.isSwitchedOn))
         .filter(const(isSupportedImage))
-        .map { host =>
-          val signedPath = ImageUrlSigner.sign(s"${uri.getRawPath}${imageType.resizeString}", host.token)
-          s"$imageServiceHost/img/${host.prefix}$signedPath"
+        .map { imageType =>
+          val signedPath = ImageUrlSigner.sign(s"${uri.getRawPath}$imageType")
+          s"$imageServiceHost/img/$imageType$signedPath"
         }.getOrElse(url)
     } catch {
       case error: URISyntaxException =>
